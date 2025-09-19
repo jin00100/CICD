@@ -38,10 +38,10 @@ jobs:
         mkdir -p $DEPLOY_PATH
         # 将 docker-compose.yml 复制到部署目录
         cp $GITHUB_WORKSPACE/docker-compose.yml $DEPLOY_PATH/
-        # 进入部署目录
+        # cd进入部署目录
         cd $DEPLOY_PATH
-        # 使用 docker-compose 拉取并启动
-        docker-compose pull
-        docker-compose up -d
+        # 使用 docker compose (带空格) 的新语法
+        docker compose pull
+        docker compose up -d
         # 清理旧镜像
         docker image prune -f
