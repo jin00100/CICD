@@ -1,0 +1,47 @@
+name: CI/CD Pipeline with Self-hosted Runner
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    # 关键改动：指定任务运行在自托管的Runner上
+    runs-on: self-hosted
+
+    steps:
+    # 第一步：检出代码
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 第二步：登录到 Docker Hub
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # 第三步：构建并推送 Docker 镜像
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/node-cicd-demo:latest
+
+    # 第四步：部署应用 (直接在Runner上执行命令)
+    - name: Deploy Application
+      run: |
+        # 定义部署目录，请根据您的服务器情况修改
+        DEPLOY_PATH=/app/node-cicd-demo
+        # 确保部署目录存在
+        mkdir -p $DEPLOY_PATH
+        # 将 docker-compose.yml 复制到部署目录
+        cp $GITHUB_WORKSPACE/docker-compose.yml $DEPLOY_PATH/
+        # 进入部署目录
+        cd $DEPLOY_PATH
+        # 使用 docker-compose 拉取并启动
+        docker-compose pull
+        docker-compose up -d
+        # 清理旧镜像
+        docker image prune -f
