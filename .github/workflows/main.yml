@@ -32,8 +32,8 @@ jobs:
     # 第四步：部署应用 (直接在Runner上执行命令)
     - name: Deploy Application
       run: |
-        # 定义部署目录，请根据您的服务器情况修改
-        DEPLOY_PATH=/app/node-cicd-demo
+        # 定义部署目录，使用~代表用户主目录
+        DEPLOY_PATH=~/app/node-cicd-demo
         # 确保部署目录存在
         mkdir -p $DEPLOY_PATH
         # 将 docker-compose.yml 复制到部署目录
