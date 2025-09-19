@@ -3,7 +3,7 @@ const app = express();
 const PORT = 3000;
 
 app.get('/', (req, res) => {
-	res.send('Hello from self-hosted Runner! Version 2.0,deployed automatically!')
+	res.send('Hello from self-hosted Runner! Version 2.3,deployed automatically!')
 
 
 });
